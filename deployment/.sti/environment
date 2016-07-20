@@ -1,0 +1,3 @@
+# Containers to create
+KIE_CONTAINER_DEPLOYMENT=multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.0|multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.1
+
