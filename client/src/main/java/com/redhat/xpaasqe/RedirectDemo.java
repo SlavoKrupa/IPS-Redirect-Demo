@@ -62,18 +62,19 @@ public class RedirectDemo {
       System.out.println("** Start calling multiple old");
       signalProcessInstanceAndObtainVariables(asList(oldIterator.next(), oldIterator.next()), client);
       System.out.println("** End calling multiple old");
-      System.out.println("** Start calling multiple mixed");
-      signalProcessInstanceAndObtainVariables(asList(newIterator.next(), oldIterator.next()), client);
-      System.out.println("** End calling multiple mixed");
       System.out.println("** Start calling multiple new");
       signalProcessInstanceAndObtainVariables(asList(newIterator.next(), newIterator.next()), client);
       System.out.println("** End calling multiple new");
+      System.out.println("** Start calling multiple mixed - CLOUD-724 ");
+      signalContainerAndObtainVariables(asList(newIterator.next(), oldIterator.next()), client);
+      System.out.println("** End calling multiple mixed   - CLOUD-724 ");
    }
 
    private static void signalProcessInstanceAndObtainVariables(Long processInstanceId, KieServicesClient client) {
       final ProcessServicesClient processServicesClient = client.getServicesClient(ProcessServicesClient.class);
       final QueryServicesClient queryServicesClient = client.getServicesClient(QueryServicesClient.class);
       processServicesClient.signalProcessInstance(CONTAINER_ALIAS, processInstanceId, "variable", "Hello Process!");
+      System.out.println("Signal directed to :" + getContainerVersionFromConversationId(client.getConversationId()));
       List<VariableInstance> variables = queryServicesClient.findVariablesCurrentState(processInstanceId);
       printVariables(variables);
    }
@@ -83,6 +84,19 @@ public class RedirectDemo {
       final ProcessServicesClient processServicesClient = client.getServicesClient(ProcessServicesClient.class);
       final QueryServicesClient queryServicesClient = client.getServicesClient(QueryServicesClient.class);
       processServicesClient.signalProcessInstances(CONTAINER_ALIAS, processInstanceIds, "variable", "Hello Process!");
+      System.out.println("Signal directed to: " + getContainerVersionFromConversationId(client.getConversationId()));
+      processInstanceIds.forEach((processInstanceId) -> {
+         List<VariableInstance> variables = queryServicesClient.findVariablesCurrentState(processInstanceId);
+         printVariables(variables);
+      });
+   }
+
+   private static void signalContainerAndObtainVariables(List<Long> processInstanceIds, KieServicesClient client) {
+      client.completeConversation();
+      final ProcessServicesClient processServicesClient = client.getServicesClient(ProcessServicesClient.class);
+      final QueryServicesClient queryServicesClient = client.getServicesClient(QueryServicesClient.class);
+      processServicesClient.signal(CONTAINER_ALIAS, "variable", "Hello Process!");
+      System.out.println("Signal directed to: " + getContainerVersionFromConversationId(client.getConversationId()));
       processInstanceIds.forEach((processInstanceId) -> {
          List<VariableInstance> variables = queryServicesClient.findVariablesCurrentState(processInstanceId);
          printVariables(variables);
