@@ -1,4 +1,4 @@
 # Containers to create
-KIE_CONTAINER_DEPLOYMENT=multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.0|multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.1
+KIE_CONTAINER_DEPLOYMENT_OVERRIDE=multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.0|multipleVersionContainer=com.redhat.xpaasqe:UpdateDemo:1.0.1
 KIE_CONTAINER_REDIRECT_ENABLED=true
 
